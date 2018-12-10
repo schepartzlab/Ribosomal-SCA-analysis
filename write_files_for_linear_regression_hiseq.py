@@ -14,7 +14,7 @@ import math
 nucleotides = ["A", "C", "G", "T"]
 
 mutant_count_treshold = 300 #the required number of reads containing each mutant for the mutant to be included in the dataset
-r2_threshold =.6 #the required R^2 on the growth curve in order for the mutant to be included in the dataset 
+r2_threshold =60 #the required R^2 * 100 on the growth curve in order for the mutant to be included in the dataset 
 run_index=2
 experiment_index = 2
 input_directory = "HiSeq/2_13_18" #directory where processed sequence reads are stored
