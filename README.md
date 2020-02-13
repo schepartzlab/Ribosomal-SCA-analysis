@@ -15,3 +15,8 @@ present in each sequencing read
 write_files_for_linear_regression_hiseq.py and write_files_for_linear_regression_miseq.py perform the final steps of analyzing next generaion sequencing
 data. They use the output from Hiseq_data_analysis.py and Miseq_data_analysis.py. These scripts perform linear regressions on the log of the relative frequency
 of each mutant over time.
+
+environment.yml file contains information about all package versions used to produce the results described in the paper, although we anticipate that the same
+results would be obtained using any installation of the Anaconda build of Python 2.
+
+Jupyter notebook folder contains a jupyter notebook with a demonstration of the code used to produce the results described in the paper.
