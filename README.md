@@ -19,6 +19,7 @@ of each mutant over time.
 environment.yml file contains information about all package versions used to produce the results described in the paper, although we anticipate that the same
 results would be obtained using any installation of the Anaconda build of Python 2.
 
-SCA_matrix.csv contains the SCA coupling matrix.
+SCA_matrix.csv contains the SCA coupling matrix, all values have been rounded to three digits to reduce the file size. Therefore, this matrix should only be used for
+visualization or ranking pairs of positions by degree of coupling, not to reproduce the ICs. To reproduce the ICs described in the paper please run the Jupyter notebook.
 
 Jupyter notebook folder contains a jupyter notebook with a demonstration of the code used to produce the results described in the paper.
