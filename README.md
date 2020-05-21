@@ -19,4 +19,6 @@ of each mutant over time.
 environment.yml file contains information about all package versions used to produce the results described in the paper, although we anticipate that the same
 results would be obtained using any installation of the Anaconda build of Python 2.
 
+SCA_matrix.csv contains the SCA coupling matrix.
+
 Jupyter notebook folder contains a jupyter notebook with a demonstration of the code used to produce the results described in the paper.
