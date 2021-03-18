@@ -98,6 +98,7 @@ def readAlg(filename):
     >>> headers, sequences = readAlg(filename) '''
     filelines = open(filename, 'r').readlines()
     headers = list(); sequences = list(); notfirst = 0
+    seq = ''
     for line in filelines:
         if line[0] == '>':
             if notfirst > 0: sequences.append(seq.replace('\n','').upper())
@@ -138,13 +139,12 @@ def AnnotPfam(pfam_in, pfam_out, pfam_seq=path2pfamseq):
     f = open(pfam_out,'w')
     pfamseq_ids = [h.split('/')[0] for h in headers]
     for i, key in enumerate(pfamseq_ids):
-    	print('Current step %i, key %s' % (i,key))
-    	try:
+        print('Current step %i, key %s' % (i,key))
+        try:
 	        info = seq_info[key]
-    	except:
-    		info = '\t'.join(['unknown']*10 + ['unknown;unknown'])
-        f.write('>%s|%s|%s|%s\n' % (key, info.split('\t')[6], info.split('\t')[9],\
-                ','.join([name.strip() for name in info.split('\t')[10].split(';')])))
+        except:
+          info = '\t'.join(['unknown']*10 + ['unknown;unknown'])
+        f.write('>%s|%s|%s|%s\n' % (key, info.split('\t')[6], info.split('\t')[9],','.join([name.strip() for name in info.split('\t')[10].split(';')])))
         f.write('%s\n' % (sequences[i]))
     f.close()
     print('Elapsed time: %.1f min' % ((end_time-start_time)/60))
@@ -203,10 +203,10 @@ def MSAsearch(hd, algn, seq, species = None, path2_algprog=path2needle):
         SeqIO.write(SeqRecord(Seq(seq), id='PDB sequence'), output_handle, "fasta")
         output_handle.close()
         f = open("tmp/algn_seq.fasta", "w")
-    	for i in range(len(algn)):
+        for i in range(len(algn)):
         	f.write(">" + hd[i] + "\n")
         	f.write (algn[i] + "\n")
-    	f.close()
+        f.close()
         args = ['ggsearch36','-M 1-'+str(len(algn[0])),'-b','1','-m 8','tmp/PDB_seq.fasta','tmp/algn_seq.fasta']
         output = subprocess.check_output(args)
         i_0 = [i for i in range(len(hd)) if hd[i].split('|')[0]==output.split('\t')[1].split('|')[0]]
@@ -254,7 +254,8 @@ def MSAsearch(hd, algn, seq, species = None, path2_algprog=path2needle):
             i_0 = score.index(max(score))
             if species is not None:
                 key_0 = key_list[i_0]
-                strseqnum = [i for i,h in enumerate(h_annot) if h.split('|')[0]==key_0][0]
+                #strseqnum = [i for i,h in enumerate(h_annot) if h.split('|')[0]==key_0][0]
+                strseqnum = [i for i,h in enumerate(hd) if h.split('|')[0]==key_0][0]
             else:
                 strseqnum = i_0
             print("BP strseqnum is %i" % (strseqnum))
@@ -327,8 +328,8 @@ def makeATS(sequences, refpos, refseq, iref=0, truncate=False):
         ats_out = [ats_ref[i] for i in keep_ref]
     else:
         tmp = sequences[iref].replace('-','.')
-        print "len ref sequence:"
-        print len(refseq)
+        print("len ref sequence:")
+        print(len(refseq))
         seqal_ref, seqal_alg, _, _, _ = pairwise2.align.globalms(refseq, tmp,\
                                          2, -1, -.5, -.1)[0]
         ats_out = list()
@@ -1017,7 +1018,7 @@ def numConnected(Vp, k, distmat, eps_list=np.arange(.5,0,-.01), dcontact=5):
             adjMat = distmat[np.ix_(group,group)] < dcontact
             num_co.append(sizeLargestCompo(adjMat))
         else:
-			num_co.append(0)
+          num_co.append(0)
     return eps_range, num_co, num_tot
 
 def chooseKpos(Lsca,Lrand):
@@ -1050,8 +1051,8 @@ def icList(Vpica, kpos, Csca, p_cut=0.95):
         cd = t.cdf(x_dist,pd[0],pd[1],pd[2])
         tmp = scaled_pdf[k].argmax()
         if abs(max(Vpica[:,k])) > abs(min(Vpica[:,k])):
-            print k
-            tail = cd[tmp:len(cd)]
+          print(k)
+          tail = cd[tmp:len(cd)]
         else:
             cd = 1 - cd
             tail = cd[0:tmp]
@@ -1101,7 +1102,7 @@ def icListForDC(Vpica, kpos, Csca, p_cut=0.95):
     scaled_pdf = list()
     all_fits = list()
     for k in range(kpos):
-        print k
+        print(k)
         pd = t.fit(Vpica[:,k])
         all_fits.append(pd)
         iqr = scoreatpercentile(Vpica[:,k],75) - scoreatpercentile(Vpica[:,k],25)
@@ -1204,7 +1205,7 @@ def directInfo(freq1, freq2, lbda=.0005, freq0=np.ones(4)/5, Naa=4):
     '''
     Npos = int(len(freq1)/Naa)
     Cmat_dat = freq2 - np.outer(freq1,freq1)
-    print Cmat_dat
+    print(Cmat_dat)
     # Background:
     block = np.diag(freq0) - np.outer(freq0,freq0)
     Cmat_bkg = np.zeros((Npos*Naa, Npos*Naa))
@@ -1212,8 +1213,8 @@ def directInfo(freq1, freq2, lbda=.0005, freq0=np.ones(4)/5, Naa=4):
     # Regularizations:
     Cmat = (1-lbda)*Cmat_dat + lbda*Cmat_bkg
     Cfrob_dat = np.zeros((Npos,Npos))
-    print "Cmat"
-    print Cmat
+    print("Cmat")
+    print(Cmat)
     frq = (1-lbda)*freq1 + lbda*np.tile(freq0,Npos)
     # DI at mean-field approx:
     Jmat = -np.linalg.inv(Cmat)
@@ -1308,7 +1309,7 @@ def randAlg(frq, Mseq):
     Npos = frq.shape[0]
     msa_rand = np.zeros((Mseq, Npos), dtype=int)
     for i in range(Npos):
-        Maa = np.random.multinomial(Mseq, frq[i,:])
+        Maa = np.random.multinomial(Mseq, np.abs(frq[i,:]))
         col = np.array([], dtype=int)
         for aa,M in enumerate(Maa): col = np.append(col, np.tile(aa,M))
         np.random.shuffle(col)
@@ -1336,10 +1337,9 @@ def randomize(msa_num, Ntrials, seqw=1, norm='frob', lbda=0, Naa=4, kmax=6):
        >>> Vrand, Lrand, Crand = randomize(msa_num, 10, seqw, Naa=20, kmax=6)
 
     '''
-    np.random.seed(0)
-    if type(seqw) == int and seqw == 1: seqw = np.ones((1,Nseq))
-    Mseq = np.round(seqw.sum()).astype(int)
     Nseq, Npos = msa_num.shape
+    if type(seqw) == int and seqw == 1: seqw = np.ones((1,Nseq))
+    Mseq = np.round(seqw.sum()).astype(int)    
     Crnd = np.zeros((Npos,Npos))
     # Weighted frequencies, including gaps:
     f1, f2, f0 = freq(msa_num, Naa=4, seqw=seqw, lbda=lbda, freq0=np.ones(4)/5)
@@ -1350,7 +1350,7 @@ def randomize(msa_num, Ntrials, seqw=1, norm='frob', lbda=0, Naa=4, kmax=6):
     Vrand = np.zeros((Ntrials,Npos,kmax))
     Lrand = np.zeros((Ntrials,Npos))
     for t in range(Ntrials):
-        print t
+        print(t)
         msa_rand = randAlg(fr01, Mseq)
         Csca = scaMat(msa_rand,norm=norm,lbda=lbda)[0]
         Crnd += Csca
@@ -1381,9 +1381,9 @@ def randomizeAPC(msa_num, Ntrials, seqw=1, norm='frob', lbda=0, Naa=4, kmax=6):
        >>> Vrand, Lrand, Crand = randomize(msa_num, 10, seqw, Naa=20, kmax=6)
 
     '''
-    if type(seqw) == int and seqw == 1: seqw = np.ones((1,Nseq))
-    Mseq = np.round(seqw.sum()).astype(int)
     Nseq, Npos = msa_num.shape
+    if type(seqw) == int and seqw == 1: seqw = np.ones((1,Nseq))
+    Mseq = np.round(seqw.sum()).astype(int)    
     Crnd = np.zeros((Npos,Npos))
     # Weighted frequencies, including gaps:
     f1, f2, f0 = freq(msa_num, Naa=4, seqw=seqw, lbda=lbda, freq0=np.ones(4)/5)
@@ -1394,7 +1394,7 @@ def randomizeAPC(msa_num, Ntrials, seqw=1, norm='frob', lbda=0, Naa=4, kmax=6):
     Vrand = np.zeros((Ntrials,Npos,kmax))
     Lrand = np.zeros((Ntrials,Npos))
     for t in range(Ntrials):
-        print t
+        print(t)
         msa_rand = randAlg(fr01, Mseq)
         Csca = scaMat(msa_rand,norm=norm,lbda=lbda)[0]
         total_avg = 0.0
@@ -1673,4 +1673,4 @@ def rndPhylogeneticTree(aln, Ntrials):
         calculator = Phylo.TreeConstruction.DistanceCalculator('identity')
         constructor = Phylo.TreeConstruction.DistanceTreeConstructor(calculator, 'nj')
         tree = constructor.build_tree(aln)
-        print tree
+        print(tree)
